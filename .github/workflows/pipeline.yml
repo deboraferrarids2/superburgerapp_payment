@@ -42,7 +42,6 @@ jobs:
       - name: Build Docker Image
         run: |
           docker-compose build
-        working-directory: ./path/to/your/docker-compose-directory  # Substitua pelo caminho correto
 
       # Step 7: Tag Docker Image
       - name: Tag Docker Image
