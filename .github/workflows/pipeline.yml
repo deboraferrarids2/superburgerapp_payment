@@ -72,7 +72,7 @@ jobs:
       # Step 11: Update Kubernetes Deployment with new image
       - name: Update Kubernetes Deployment with new image
         run: |
-          kubectl set image deployment/django-postgres-deployment app=778862303728.dkr.ecr.us-east-1.amazonaws.com/apieventos:latest --record
+          kubectl set image deployment/django-postgres-deployment app=778862303728.dkr.ecr.us-east-1.amazonaws.com/apieventos:latest
 
       # Step 12: Wait for Deployment Rollout
       - name: Wait for Deployment Rollout
