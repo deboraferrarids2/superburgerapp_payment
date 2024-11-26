@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # superburgerapp
 aplicacao superburger store
 
@@ -119,3 +120,6 @@ python
 
 ALLOWED_HOSTS = ['172.18.0.2:50001', 'localhost', '127.0.0.1']
 
+=======
+# superburgerapp_payment
+>>>>>>> d179bc0509af9377212d0d909683575fe0716687
