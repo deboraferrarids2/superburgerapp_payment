@@ -7,29 +7,29 @@ ENV PYTHONUNBUFFERED 1
 # set work directory
 WORKDIR /usr/src/app
 
-#create log files
+# create log files
 RUN mkdir /usr/src/app/logs
 
+# Install the MongoDB client tools
 RUN apt-get update \
-	&& apt-get install -y --no-install-recommends \
-		postgresql-client \
-	&& rm -rf /var/lib/apt/lists/*
+    && apt-get install -y --no-install-recommends \
+        mongo-tools \
+    && rm -rf /var/lib/apt/lists/*
 
+# Copy the requirements file first
 COPY requirements.txt ./
 
 # install dependencies
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
+# Copy the application code
 COPY . .
 
-EXPOSE 5000
+EXPOSE 7000
 
-# Run migrations
-#RUN python manage.py makemigrations
-#RUN python manage.py migrate
+# Run the migrations (if needed for MongoDB)
+# RUN python manage.py makemigrations
+# RUN python manage.py migrate
 
-# Run the create_superuser.py script to create the superuser
-#RUN python cmd_create_superuser.py
-
-CMD ["python", "manage.py", "runserver", "0.0.0.0:5000"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:7000"]

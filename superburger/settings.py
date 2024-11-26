@@ -37,8 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'user_auth',
-    'order',
     'payment',
 ]
 
@@ -79,20 +77,18 @@ import os
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'djongo',
+        'ENFORCE_SCHEMA': False,
         'NAME': 'challengedb',
-        'USER': 'fiap',
-        'PASSWORD': 'fiapfiap',
-        'HOST': 'dbinstance.czg4uw2c8vlr.us-east-1.rds.amazonaws.com',
-        'PORT': '5432'
+        'CLIENT': {
+            'host': 'mongodb://mongo-db:27017/',
+            'username': 'fiap',
+            'password': 'fiap',
+            'authSource': 'admin',
+            'authMechanism': 'SCRAM-SHA-1',
+        }
     }
 }
-
-
-AUTH_USER_MODEL = 'user_auth.BaseUser'
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-]
 
 
 # Password validation

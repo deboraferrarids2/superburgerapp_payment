@@ -7,3 +7,10 @@ djangorestframework-simplejwt
 # Testing and coverage
 coverage
 behave==1.2.6
+
+
+mongoengine==0.22.1
+django_mongoengine
+djongo
+
+mercadopago
