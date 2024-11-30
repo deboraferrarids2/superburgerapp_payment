@@ -1,0 +1,7 @@
+[run]
+source = payment, superburger
+
+[report]
+omit =
+    */migrations/*
+    */tests.py
