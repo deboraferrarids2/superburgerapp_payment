@@ -53,7 +53,7 @@ class TransactionWebhookView(APIView):
 
             if success:
                 # Respond with a success message and HTTP 200 status code
-                logger.info(f'Webhook processed successfully for action: {action} and resource_id: {resource_id}')
+                logger.info(f'Webhook webh successfully for action: {action} and resource_id: {resource_id}')
                 return Response({'message': 'Webhook processed successfully'}, status=status.HTTP_200_OK)
             else:
                 # Respond with an error message and HTTP 400 status code

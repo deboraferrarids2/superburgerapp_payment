@@ -1,5 +1,6 @@
 import http.client
 import json
+import requests
 from django.conf import settings
 from payment.models.transaction import Transaction
 import logging
@@ -61,6 +62,8 @@ class ProcessWebhookUseCase:
                 # order.save()
                 # logger.info(f'Updated order to recebido')
                 # return True  # Indicate that the error handling succeeded
+                self.update_order_status(transaction)
+                return True  # Success
             except Transaction.DoesNotExist:
                 logger.error(f'Payment with external_id {resource_id} does not exist')
                 return False
@@ -98,9 +101,27 @@ class ProcessWebhookUseCase:
                 #     order.status = 'Recebido'
                 #     order.save()
 
+                # Update the order status in order-app
+                print(f'001')
+                self.update_order_status(transaction)
                 return True  # Success
             except Transaction.DoesNotExist:
                 logger.error(f'Transaction with ID {transaction_id} does not exist')
                 return False
         return False
+
+    def update_order_status(self, transaction):
+        """Update the order status in order-app."""
+        try:
+            print(f'002')
+            order_id=transaction.order_id
+            url = f"http://order-app:5000/order/{order_id}/status/"
+            payload = {"status": 'recebido'}
+            headers = {"Content-Type": "application/json"}
+            response = requests.post(url, json=payload, headers=headers)
+            response.raise_for_status()
+
+            logger.info(f'Successfully updated order {order_id} status to recebido')
+        except requests.exceptions.RequestException as e:
+            logger.error(f'Failed to update order {order_id} status: {e}')
 
