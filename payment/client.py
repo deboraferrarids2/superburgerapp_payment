@@ -1,59 +1,72 @@
-import requests
+import http.client
+import json
+import logging
+from django.conf import settings
 
-class MercadoPagoClient:
-    def __init__(self, access_token):
-        self.base_url = "https://api.mercadopago.com/v1"
-        self.access_token = 'TEST-5261175871519424-012909-26423cc1006735d3f3d60c7efc26d4b3-407707350'
+# Configurar o logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-    def _create_headers(self, idempotency_key):
+class MercadoPagoService:
+    def __init__(self):
+        self.access_token = settings.MERCADO_PAGO_ACCESS_TOKEN
+        logger.info('MercadoPagoService initialized with access token.')
+
+    def create_qr_code(self, order, transaction_amount):
+        amount=transaction_amount
+        logger.info(f'Starting QR code creation for amount: {amount}')
+        connection = http.client.HTTPSConnection("api.mercadopago.com")
         headers = {
             'Authorization': f'Bearer {self.access_token}',
-            'x-idempotency-key': idempotency_key,
             'Content-Type': 'application/json'
         }
-        print(f'request headers: {headers}')
-        return headers
 
-    def process_payment(self, transaction_amount, payer_email):
-        url = f"{self.base_url}/payments"
-
-        idempotency_key = '<SOME_UNIQUE_VALUE>'  # You can generate a unique idempotency key
-        headers = self._create_headers(idempotency_key)
-
-        payment_data = {
-            "transaction_amount": transaction_amount,
-            "payment_method_id": "pix",
-            "payer": {
-                "email": payer_email,
+        # Construir a lista de itens para o payload
+        items = [
+            {
+                "sku_number": '001',
+                "category": 'product.category',
+                "title": 'product.name',
+                "description": f'{order}',
+                "unit_price": amount,
+                "quantity": 1,
+                "unit_measure": "unit",
+                "total_amount": amount
             }
+        ]
+                
+        
+        # Construir o payload
+        data = {
+            "cash_out": {"amount": 0},
+            "description": "Purchase description.",
+            "external_reference": f'{amount}',
+            "items": items,
+            "notification_url": "http://example.com/webhook/",
+            #"sponsor": {"id": 407707350},
+            "title": "Product order",
+            "total_amount": amount,
         }
 
-        print(payment_data)
-        response = requests.post(url, json=payment_data, headers=headers)
-        
-        print("Response Status Code:", response.status_code)
-        print("Response Headers:", response.headers)
-        print("Response Content:", response.text)
-
-        if response.status_code == 200:
-            return response.json()
-        else:
-            # Handle errors or raise an exception
-            response.raise_for_status()
-
-    # Add other Mercado Pago API methods as needed
-    # ...
-
-# Example usage:
-# client = MercadoPagoClient("ENV_ACCESS_TOKEN")
-# payment = client.process_payment(
-#     request.transaction_amount,
-#     request.description,
-#     request.payment_method_id,
-#     request.payer_email,
-#     request.payer_first_name,
-#     request.payer_last_name,
-#     request.payer_identification_type,
-#     request.payer_identification_number,
-#     request.payer_address
-# )
+        json_data = json.dumps(data)
+        url = f'/instore/orders/qr/seller/collectors/407707350/pos/SUC001POS001/qrs'
+        logger.info(f'Sending POST request to URL: {url}')
+        logger.info(f'Sending POST request with data: {json_data}')
+        try:
+            connection.request("POST", url, body=json_data, headers=headers)
+            response = connection.getresponse()
+            response_data = response.read().decode()
+            
+            logger.info(f'Response status: {response.status}')
+            logger.debug(f'Response data: {response_data}')
+            
+            if response.status == 201:
+                response_json = json.loads(response_data)
+                logger.info(f'Successfully created QR code response: {response_json}')
+                return response_json
+            else:
+                logger.error(f'Error creating QR code: {response_data}')
+                raise Exception(f'Error creating QR code: {response_data}')
+        except Exception as e:
+            logger.error(f'Exception occurred: {e}')
+            raise

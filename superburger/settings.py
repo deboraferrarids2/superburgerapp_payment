@@ -90,6 +90,14 @@ DATABASES = {
     }
 }
 
+import sys
+
+# Substituição do banco de dados para SQLite em memória durante os testes
+if 'test' in sys.argv:
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:',  # Banco de dados em memória
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
