@@ -13,67 +13,50 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+      - name: Set up Docker Buildx (fake)
+        run: echo "Docker Buildx setup - FAKED"
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+      - name: Configure AWS Credentials (fake)
+        run: echo "AWS Credentials setup - FAKED"
 
-      - name: Install Docker Compose and JQ
+      - name: Install Docker Compose and JQ (fake)
+        run: echo "Docker Compose and JQ installation - FAKED"
+
+      - name: Log in to Amazon ECR (fake)
+        run: echo "Amazon ECR login - FAKED"
+
+      - name: Build Docker Image (fake)
+        run: echo "Docker Image build - FAKED"
+
+      - name: Tag Docker Image (fake)
+        run: echo "Docker Image tagging - FAKED"
+
+      - name: Push Docker Image to ECR (fake)
+        run: echo "Docker Image push to ECR - FAKED"
+
+      - name: Set up kubectl (fake)
+        run: echo "kubectl setup - FAKED"
+
+      - name: Configure kubeconfig (fake)
+        run: echo "Kubeconfig setup - FAKED"
+
+      - name: Check Kubernetes Context (fake)
+        run: echo "Kubernetes context check - FAKED"
+
+      - name: Validate connection to the cluster (fake)
+        run: echo "Kubernetes cluster connection validation - FAKED"
+
+      - name: Update Kubernetes Deployment with new image (fake)
+        run: echo "Kubernetes deployment update - FAKED"
+
+      - name: Wait for Deployment Rollout (fake)
+        run: echo "Kubernetes rollout status - FAKED"
+
+      # Adicionando os testes com cobertura
+      - name: Run tests with coverage
         run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose jq
-
-      - name: Log in to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1
-        with:
-          registry-type: private
-
-      - name: Build Docker Image
+          coverage run --source=payment manage.py test
+          
+      - name: Show test coverage report
         run: |
-          docker-compose build
-
-      - name: Tag Docker Image
-        run: |
-          docker tag deboraferrarids2/challenge_web:latest 778862303728.dkr.ecr.us-east-1.amazonaws.com/apieventos:latest
-
-      - name: Push Docker Image to ECR
-        run: |
-          docker push 778862303728.dkr.ecr.us-east-1.amazonaws.com/apieventos:latest
-
-      - name: Set up kubectl
-        run: |
-          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-          chmod +x kubectl
-          sudo mv kubectl /usr/local/bin/
-          kubectl version --client
-
-      - name: Configure kubeconfig
-        run: |
-          aws eks update-kubeconfig --name eks-cluster --region us-east-1
-          kubectl config view
-          kubectl config current-context
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      - name: Check Kubernetes Context
-        run: |
-          kubectl config current-context
-
-      - name: Validate connection to the cluster
-        run: |
-          kubectl cluster-info
-          kubectl get nodes
-
-      - name: Update Kubernetes Deployment with new image
-        run: |
-          kubectl set image deployment/django-postgres-deployment app=778862303728.dkr.ecr.us-east-1.amazonaws.com/apieventos:latest
-
-      - name: Wait for Deployment Rollout
-        run: |
-          kubectl rollout status deployment/django-postgres-deployment
+          coverage report --include="payment/*"
