@@ -6,23 +6,6 @@ import logging
 # Configurar o logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-class CreatePaymentUseCase:
-    def execute(self, order):
-        # Create a payment transaction
-        try:
-            with transaction.atomic():
-                # Create a new Transaction object
-                payment = Transaction(
-                    order=order,
-                    status='aguardando',  # You can set the initial status as 'pago' or any desired value
-                    external_id='',  # You can set an external ID if needed
-                )
-                payment.save()
-        except Exception as e:
-            raise Exception('Failed to create payment transaction: {}'.format(str(e)))
-
-        return payment
     
 class CheckoutOrderUseCase:
     def execute(self, order, transaction_amount):
@@ -56,15 +39,3 @@ class CheckoutOrderUseCase:
             raise
 
         
-# class CheckoutOrderUseCase:
-#     def execute(self, order):
-#         if order.status == 'em aberto':
-#             # Call the CreatePaymentUseCase to create a payment transaction
-#             create_payment_use_case = CreatePaymentUseCase()
-#             create_payment_use_case.execute(order)
-
-#             # Update the order status to 'recebido'
-#             order.status = 'recebido'
-#             order.save()
-#         else:
-#             raise Exception('Esse pedido não pode ser finalizado.')

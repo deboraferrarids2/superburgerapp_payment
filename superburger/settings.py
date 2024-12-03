@@ -74,30 +74,34 @@ WSGI_APPLICATION = 'superburger.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 import os
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'djongo',
-        'ENFORCE_SCHEMA': False,
-        'NAME': 'challengedb',
-        'CLIENT': {
-            'host': 'mongodb://mongo-db:27017/',
-            'username': 'fiap',
-            'password': 'fiap',
-            'authSource': 'admin',
-            'authMechanism': 'SCRAM-SHA-1',
-        }
-    }
-}
-
 import sys
 
 # Substituição do banco de dados para SQLite em memória durante os testes
-if 'test' in sys.argv:
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': ':memory:',  # Banco de dados em memória
+if 'test' in sys.argv:  # Isso verifica se o comando `test` está sendo usado
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',  # Usa o SQLite em memória para testes
+        }
     }
+    
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'djongo',
+            'ENFORCE_SCHEMA': False,
+            'NAME': 'challengedb',
+            'CLIENT': {
+                'host': 'mongodb://mongo-db:27017/',
+                'username': 'fiap',
+                'password': 'fiap',
+                'authSource': 'admin',
+                'authMechanism': 'SCRAM-SHA-1',
+            }
+        }
+    }
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

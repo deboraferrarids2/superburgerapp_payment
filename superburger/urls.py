@@ -26,6 +26,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('transactions/', create_and_retrieve_transaction, name='create_and_retrieve_transaction'),
     path('webhook/', TransactionWebhookView.as_view(), name='mercado_pago_webhook'),
+
 ]
 
 

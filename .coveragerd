@@ -1,7 +1,14 @@
-[run]
-source = payment, superburger
-
-[report]
+[coverage:run]
+source = payment
 omit =
-    */migrations/*
-    */tests.py
+    */client.py
+    */use_cases/webhooks.py
+    */views/webhooks.py
+
+[coverage:report]
+omit =
+    */client.py
+    */use_cases/webhooks.py
+    */views/webhooks.py
+    /usr/lib/python3/*
+    */tests/*

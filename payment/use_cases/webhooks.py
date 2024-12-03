@@ -13,10 +13,6 @@ class ProcessWebhookUseCase:
         url = None
         if action == 'payment.updated':
             url = f'/v1/payments/{resource_id}'
-        elif action == 'chargebacks':
-            url = f'/v1/chargebacks/{resource_id}'
-        elif action == 'merchant_order':
-            url = f'/merchant_orders/{resource_id}'
         else:
             logger.error(f'Unknown action: {action}')
             return False
