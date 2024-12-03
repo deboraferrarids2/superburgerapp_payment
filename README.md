@@ -79,8 +79,3 @@ You can now access the application in your browser at http://localhost:7000
 ## Prerequisites
 
 - [Docker](https://www.docker.com/get-started)
-
-
-### for testing
-coverage run --source=payment manage.py test
-coverage report --include="payment/*"
