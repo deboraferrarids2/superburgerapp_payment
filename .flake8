@@ -1,0 +1,11 @@
+[flake8]
+max-line-length = 88
+exclude = 
+    .venv,
+    .git,
+    __pycache__,
+    migrations,
+    settings.py
+ignore = 
+    E203,  # Espaco antes de ':'
+    W503   # Linha antes de operadores binarios
