@@ -1,0 +1,14 @@
+[coverage:run]
+source = payment
+omit =
+    */client.py
+    */use_cases/webhooks.py
+    */views/webhooks.py
+
+[coverage:report]
+omit =
+    */client.py
+    */use_cases/webhooks.py
+    */views/webhooks.py
+    /usr/lib/python3/*
+    */tests/*

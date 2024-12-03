@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 from rest_framework import routers
-from payment.views import create_and_retrieve_transaction, mercado_pago_webhook
+from payment.views import create_and_retrieve_transaction, TransactionWebhookView
 
 router = routers.DefaultRouter()
 
@@ -25,7 +25,8 @@ urlpatterns = [
     path('', include(router.urls)),
     path('admin/', admin.site.urls),
     path('transactions/', create_and_retrieve_transaction, name='create_and_retrieve_transaction'),
-    path('webhook/', mercado_pago_webhook, name='mercado_pago_webhook'),
+    path('webhook/', TransactionWebhookView.as_view(), name='mercado_pago_webhook'),
+
 ]
 
 
